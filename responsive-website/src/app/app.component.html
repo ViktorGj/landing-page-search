@@ -1,0 +1,153 @@
+<router-outlet></router-outlet>
+
+<div class="header-container">
+  <div class="container h-100">
+    <div class="header-logo"><a (click)="refreshRoute()"><img src="../assets/icons/SVGs/Logo.svg" alt=""></a></div>
+    <div>
+      <img src="../assets/icons/SVGs/icn_person.svg" alt="profile-icon">
+      <img src="../assets/icons/SVGs/icn_search.svg" alt="profile-icon" class="ml-4">
+    </div>
+  </div>
+</div>
+
+<ng-container *ngIf="isLoading; else loadedState">
+  <div class="spinner-container">
+    <img class="spinner-loader" src="../assets/loading_spinner.gif" alt="">
+    <h3 class="brand-blue mt-4">Please wait a moment</h3>
+  </div>
+</ng-container>
+
+<ng-template #loadedState>
+  <ng-container *ngIf="hasSearched">
+    <ng-container *ngIf="searchResults?.length && searchResults.length > 0; else emptySearch">
+      <div class="search-results-container mb-5">
+        <div class="container">
+          <h1 class="text-center mt-5 brand-blue">{{ searchResults.length }} Results</h1>
+          <h5 class="text-center mb-5">Look at the results below to see the details of the person you've searched
+            for.</h5>
+          <div *ngFor="let user of searchResults" class="card results-card">
+            <div class="d-flex">
+              <div class="number-circle m-0"><img class="card-user-icon" src="../assets/icons/SVGs/icn_person.svg"
+                                                  alt="">
+              </div>
+              <div class="card-content pl-3">
+                <div class="card-user-header">
+                  <h4>{{ user.name }}</h4>
+                  <p>{{ user.description }}</p>
+                </div>
+                <div class="row">
+                  <div class="col-6">
+                    <h5>Address</h5>
+                    <p>{{ user.address }}</p>
+                  </div>
+                  <div class="col-6">
+                    <h5>Phone Numbers</h5>
+                    <p *ngFor="let phone of user.phones">{{ phone | phoneFormat }}</p>
+                  </div>
+                  <div class="col-6">
+                    <h5>Email</h5>
+                    <p>{{ user.email }}</p>
+                  </div>
+                  <div class="col-6">
+                    <h5>Relatives</h5>
+                    <p *ngFor="let r of user.relatives">{{ r }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+    <ng-template #emptySearch>
+      <div class="empty-search-container">
+        <div class="container text-center">
+          <h1 class="brand-blue">0 Results</h1>
+          <h5>Try starting a new search below</h5>
+        </div>
+      </div>
+    </ng-template>
+  </ng-container>
+
+  <div class="search-section">
+    <div class="container">
+      <h1 *ngIf="!hasSearched" class="text-center mb-4">Start Your Search!</h1>
+      <h4 *ngIf="!hasSearched" class="text-center mb-5">
+        Look up for people's name,
+        photos and online profiles with their email address or phone number.
+        See what you find !
+      </h4>
+      <h1 *ngIf="hasSearched" class="text-center mb-4">Can't Find The Right Person?</h1>
+      <h4 *ngIf="hasSearched" class="text-center mb-5">Try Again - Make a new search</h4>
+      <div class="mb-4 select-btns">
+        <span class="d-none d-sm-inline">TYPE OF SEARCH:</span>
+        <button [ngClass]="isEmailSearch ? 'btn-primary chat-btn' : 'btn-outline-primary'" class="btn ml-4"
+                (click)="isEmailSearch = true">EMAIL ADDRESS
+        </button>
+        <button [ngClass]="!isEmailSearch ? 'btn-primary chat-btn' : 'btn-outline-primary'" class="btn ml-3"
+                (click)="isEmailSearch = false">PHONE NUMBER
+        </button>
+      </div>
+      <div class="search-input-container">
+        <input *ngIf="isEmailSearch" type="text" class="form-control form-control-lg" [formControl]="emailInput"
+               placeholder="ENTER AN EMAIL ADDRESS"
+               [ngClass]="{ 'is-invalid': emailInput.invalid && (emailInput.dirty || emailInput.touched)}" required>
+        <input *ngIf="!isEmailSearch" type="number" class="form-control form-control-lg" [formControl]="phoneInput"
+               placeholder="ENTER A PHONE NUMBER"
+               [ngClass]="{ 'is-invalid': phoneInput.invalid && (phoneInput.dirty || phoneInput.touched)}" required
+               minlength="8" maxlength="8">
+        <button class="btn btn-primary ml-4 search-btn"
+                [disabled]="(emailInput.invalid && isEmailSearch) || (phoneInput.invalid && !isEmailSearch)"
+                (click)="search()">GO!
+        </button>
+      </div>
+      <div *ngIf="emailInput.invalid && isEmailSearch && (emailInput.dirty || emailInput.touched)"
+           class="invalid-input">
+      <span class="validation-msg p-1" *ngIf="emailInput.errors?.email || emailInput.errors?.required">
+        Please enter a valid email adress
+      </span>
+      </div>
+      <div *ngIf="phoneInput.invalid && !isEmailSearch && (phoneInput.dirty || phoneInput.touched)"
+           class="invalid-input">
+        <span class="validation-msg p-1" *ngIf="phoneInput.errors?.required || phoneInput.errors?.pattern">Please enter a valid phone number</span>
+      </div>
+      <div class="input-note pt-3">
+        <img src="../assets/icons/SVGs/lock.svg" alt="">
+        <p class="m-0 ml-3">People in the search won't be notified</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-content-section">
+    <div class="container">
+      <h1 class="text-center brand-blue">Here's How It Works</h1>
+      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam dolores dolorum ducimus explicabo facere hic
+        ipsum, laboriosam laborum maiores modi molestiae molestias nemo officiis quam quisquam, quod unde vel. Ab
+      </p>
+      <div class="bottom-content-data">
+        <div *ngFor="let item of bottomData; let i = index" class="d-flex">
+          <div class="number-circle">{{ i + 1 }}</div>
+          <div class="card-content p-3">
+            <h5 class="brand-blue">{{ item.title }}</h5>
+            <p>{{ item.description }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<div class="row footer-container m-0">
+  <div class="col-sm-9 p-0 mb-3">
+    <p class="mb-0">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Architecto delectus, dignissimos facere
+      facilis fugit
+      ipsum labore laudantium neque omnis pariatur quibusdam quis quisquam tenetur totam unde? Eligendi labore
+      repudiandae
+      similique!
+    </p>
+  </div>
+
+  <div class="col-sm-3 text-center m-auto p-0">
+    <a class="brand-link">Terms</a> | <a class="brand-link">Privacy</a>
+  </div>
+</div>

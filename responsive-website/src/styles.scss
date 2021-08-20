@@ -1,0 +1,49 @@
+/* You can add global styles to this file, and also import other style files */
+
+// import lato font
+@import url('https://fonts.googleapis.com/css2?family=Lato&display=swap');
+
+// import variables
+@import "./assets/styles/variables";
+
+// import bootstrap
+@import "../node_modules/bootstrap/scss/bootstrap";
+
+// bootstrap override
+@media (min-width: 992px) {
+  .container {
+    max-width: 980px !important;
+  }
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  background-color: $background-gray;
+  margin: 0;
+  font-family: Lato, 'Roboto', sans-serif;
+}
+
+a {
+  color: $brand-primary;
+}
+
+.brand-blue {
+  color: $brand-primary;
+}
+
+.btn-primary {
+  color: $brand-primary;
+}
+
+// bootstrap
+.btn-primary:hover {
+  background-color: #F2DA56;
+  border-color: #F2DA56;
+  color: $brand-primary;
+}
+.btn-outline-primary:hover {
+  color: $brand-primary;
+}
